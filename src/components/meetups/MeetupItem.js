@@ -1,22 +1,41 @@
 import Card from "../ui/Card";
+import classes from "./MeetupItem.module.css";
+import { useContext } from "react";
+import FavoritesContext from "../../store/favorite-context";
 
 function MeetupItem(props) {
+  const favoritesCtx = useContext(FavoritesContext);
+
+  const itemIsFavorite = favoritesCtx.itemIsFavorite(props.id);
+
+  function toggleFavoritesStatusHandler() {
+    if (itemIsFavorite) {
+      favoritesCtx.removeFavorite(props.id);
+    } else {
+      favoritesCtx.addFavorite({
+        id: props.id,
+        title: props.title,
+        description: props.description,
+        image: props.image,
+        address: props.address,
+      });
+    }
+  }
   return (
-    <li>
+    <li className={classes.item}>
       <Card>
-        <div>
-          <img
-            src="https://img.freepik.com/premium-photo/astronaut-outer-open-space-planet-earth-stars-provide-background-erforming-space-planet-earth-sunrise-sunset-our-home-iss-elements-this-image-furnished-by-nasa_150455-16829.jpg?w=996"
-            alt="no nada"
-          />
+        <div className={classes.image}>
+          <img src={props.image} alt={props.title} />
         </div>
-        <div>
-          <h3>{props.name}</h3>
+        <div className={classes.content}>
+          <h3>{props.title}</h3>
           <address>{props.address}</address>
-          <p>{props.email}</p>
+          <p>{props.description}</p>
         </div>
-        <div>
-          <button>to favorites</button>
+        <div className={classes.actions}>
+          <button onClick={toggleFavoritesStatusHandler}>
+            {itemIsFavorite ? "Remove from Favorites" : "To Favorites"}
+          </button>
         </div>
       </Card>
     </li>
